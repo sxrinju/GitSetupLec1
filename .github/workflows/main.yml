@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-
+      
+permissions:
+  contents: write
+  
 jobs:
   update_html_and_readme:
     runs-on: ubuntu-latest
@@ -30,3 +33,13 @@ jobs:
         run: |
           echo "### Updated by ${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S') [Commit: $(git rev-parse --short HEAD)]" >> README.md
           tail -n 10 README.md
+
+      # Step 4: Commit changes to index.html and README
+      - name: Commit and Push Changes
+        if: github.actor == 'sxrinju'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html README.md
+          git commit -m "Workflow: Updated HTML and README for ${{ github.actor }}" || echo "No changes to commit"
+          git push origin main
