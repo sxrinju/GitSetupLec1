@@ -17,26 +17,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
 
-      # Step 2: Detect the actor and update HTML
-      - name: Show GitHub username
-        run: echo "GitHub username is $GITHUB_ACTOR"
-
-      - name: Update team leader HTML
-        if: github.actor == 'sxrinju'
+      # Step 2: Update index.html for each team member
+      - name: Update index.html
         run: |
-          sed -i '/<\/body>/i <p>Updated by Team Leader on '"$(date)"'</p>' index.html
+          sed -i '/<\/body>/i <p>Updated by ${{ github.actor }} on '"$(date)"'</p>' index.html
           cat index.html
 
       # Step 3: Append an update log to README
       - name: Update README log
-        if: github.actor == 'sxrinju'
         run: |
           echo "### Updated by ${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S') [Commit: $(git rev-parse --short HEAD)]" >> README.md
           tail -n 10 README.md
 
       # Step 4: Commit changes to index.html and README
       - name: Commit and Push Changes
-        if: github.actor == 'sxrinju'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
