@@ -13,3 +13,13 @@ jobs:
       # Step 1: Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v6
+
+      # Step 2: Detect the actor and update HTML
+      - name: Show GitHub username
+        run: echo "GitHub username is $GITHUB_ACTOR"
+
+      - name: Update team leader HTML
+        if: github.actor == 'sxrinju'
+        run: |
+          sed -i '/<\/body>/i <p>Updated by Team Leader on '"$(date)"'</p>' index.html
+          cat index.html
